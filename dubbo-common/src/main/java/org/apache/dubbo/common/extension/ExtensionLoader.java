@@ -67,11 +67,11 @@ import static org.apache.dubbo.common.constants.CommonConstants.REMOVE_VALUE_PRE
  * So the instances returned from them are of process or classloader scope. If you want to support
  * multiple dubbo servers in a single process, you may need to refactor these three classes.
  * <p>
- * Load dubbo extensions
+ * Load dubbo extensions 加载dubbo扩展点
  * <ul>
- * <li>auto inject dependency extension </li>
- * <li>auto wrap extension in wrapper </li>
- * <li>default extension is an adaptive instance</li>
+ * <li>auto inject dependency extension </li> 自动依赖注入
+ * <li>auto wrap extension in wrapper </li> 自动包装扩展
+ * <li>default extension is an adaptive instance</li> 默认扩展一个自适应的实例（给你一个默认实例）
  * </ul>
  *
  * @see <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jar/jar.html#Service%20Provider">Service Provider in Java 5</a>
