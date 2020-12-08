@@ -61,6 +61,9 @@ import static org.apache.dubbo.config.AbstractConfig.getTagName;
 import static org.apache.dubbo.config.Constants.PROTOCOLS_SUFFIX;
 import static org.apache.dubbo.config.Constants.REGISTRIES_SUFFIX;
 
+/**
+ * 配置管理器
+ */
 public class ConfigManager extends LifecycleAdapter implements FrameworkExt {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
@@ -68,7 +71,7 @@ public class ConfigManager extends LifecycleAdapter implements FrameworkExt {
     public static final String NAME = "config";
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-
+    /** 配置缓存 */
     final Map<String, Map<String, AbstractConfig>> configsCache = newMap();
 
     public ConfigManager() {
@@ -134,6 +137,10 @@ public class ConfigManager extends LifecycleAdapter implements FrameworkExt {
         configCenters.forEach(this::addConfigCenter);
     }
 
+    /**
+     * 获取默认的配置中心
+     * @return
+     */
     public Optional<Collection<ConfigCenterConfig>> getDefaultConfigCenter() {
         Collection<ConfigCenterConfig> defaults = getDefaultConfigs(getConfigsMap(getTagName(ConfigCenterConfig.class)));
         if (CollectionUtils.isEmpty(defaults)) {

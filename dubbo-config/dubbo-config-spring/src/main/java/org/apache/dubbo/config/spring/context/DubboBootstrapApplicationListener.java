@@ -43,9 +43,14 @@ public class DubboBootstrapApplicationListener extends OneTimeExecutionApplicati
     private final DubboBootstrap dubboBootstrap;
 
     public DubboBootstrapApplicationListener() {
+        // 这里创建dubbo 引导类实例
         this.dubboBootstrap = DubboBootstrap.getInstance();
     }
 
+    /**
+     * 只有是spring的原始事件才会执行
+     * @param event {@link ApplicationContextEvent}
+     */
     @Override
     public void onApplicationContextEvent(ApplicationContextEvent event) {
         if (event instanceof ContextRefreshedEvent) {
@@ -56,10 +61,12 @@ public class DubboBootstrapApplicationListener extends OneTimeExecutionApplicati
     }
 
     private void onContextRefreshedEvent(ContextRefreshedEvent event) {
+        // spring准备完毕，开始启动dubbo引导
         dubboBootstrap.start();
     }
 
     private void onContextClosedEvent(ContextClosedEvent event) {
+        // spring关闭，开始关闭dubbo引导
         dubboBootstrap.stop();
     }
 

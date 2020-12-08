@@ -31,17 +31,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * 环境配置中心
+ */
 public class Environment extends LifecycleAdapter implements FrameworkExt {
     public static final String NAME = "environment";
-
+    /** 属性配置 */
     private final PropertiesConfiguration propertiesConfiguration;
+    /** jvm配置  */
     private final SystemConfiguration systemConfiguration;
+    /** 机器环境配置 */
     private final EnvironmentConfiguration environmentConfiguration;
+    /** 外部内存配置 */
     private final InmemoryConfiguration externalConfiguration;
+    /** 应用外部配置 */
     private final InmemoryConfiguration appExternalConfiguration;
 
     private CompositeConfiguration globalConfiguration;
-
+    /**  */
     private Map<String, String> externalConfigurationMap = new HashMap<>();
     private Map<String, String> appExternalConfigurationMap = new HashMap<>();
 
@@ -59,8 +66,10 @@ public class Environment extends LifecycleAdapter implements FrameworkExt {
 
     @Override
     public void initialize() throws IllegalStateException {
+        // 获取配置管理中心
         ConfigManager configManager = ApplicationModel.getConfigManager();
         Optional<Collection<ConfigCenterConfig>> defaultConfigs = configManager.getDefaultConfigCenter();
+        // 配置中心转换成环境中的缓存
         defaultConfigs.ifPresent(configs -> {
             for (ConfigCenterConfig config : configs) {
                 this.setExternalConfigMap(config.getExternalConfiguration());

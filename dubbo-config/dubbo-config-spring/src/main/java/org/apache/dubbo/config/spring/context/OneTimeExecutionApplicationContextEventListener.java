@@ -35,7 +35,12 @@ abstract class OneTimeExecutionApplicationContextEventListener implements Applic
 
     private ApplicationContext applicationContext;
 
+    /**
+     * 事件源头
+     * @param event
+     */
     public final void onApplicationEvent(ApplicationEvent event) {
+        // 当前事件属于原始数据，并且是spring事件
         if (isOriginalEventSource(event) && event instanceof ApplicationContextEvent) {
             onApplicationContextEvent((ApplicationContextEvent) event);
         }

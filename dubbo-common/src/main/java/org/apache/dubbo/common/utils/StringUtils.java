@@ -890,6 +890,12 @@ public final class StringUtils {
         return buf.toString();
     }
 
+    /**
+     * 驼峰拆分名称
+     * @param camelName
+     * @param split
+     * @return
+     */
     public static String camelToSplitName(String camelName, String split) {
         if (isEmpty(camelName)) {
             return camelName;

@@ -143,9 +143,9 @@ public class DubboBootstrap extends GenericEventListener {
     private final Condition condition = lock.newCondition();
 
     private final Lock destroyLock = new ReentrantLock();
-
+    /** 单实例线程池 */
     private final ExecutorService executorService = newSingleThreadExecutor();
-
+    /** 获取默认的事件分发器 */
     private final EventDispatcher eventDispatcher = EventDispatcher.getDefaultExtension();
 
     private final ExecutorRepository executorRepository = getExtensionLoader(ExecutorRepository.class).getDefaultExtension();
@@ -159,13 +159,13 @@ public class DubboBootstrap extends GenericEventListener {
     private volatile boolean exportAsync;
 
     private volatile boolean referAsync;
-
+    /** dubbo 初始化标志 */
     private AtomicBoolean initialized = new AtomicBoolean(false);
-
+    /** dubbo 启动开始标志 */
     private AtomicBoolean started = new AtomicBoolean(false);
-
+    /** dubbo 开始准备标志 */
     private AtomicBoolean ready = new AtomicBoolean(true);
-
+    /** dubbo 关闭标志 */
     private AtomicBoolean destroyed = new AtomicBoolean(false);
 
     private volatile ServiceInstance serviceInstance;
@@ -509,28 +509,31 @@ public class DubboBootstrap extends GenericEventListener {
     }
 
     /**
+     * dubbo 引导程序的初始化
      * Initialize
      */
     public void initialize() {
+        // 相同进程防止重复初始化
         if (!initialized.compareAndSet(false, true)) {
             return;
         }
-
+        // 初始化框架的扩展
         ApplicationModel.initFrameworkExts();
-
+        // 启动配置中心
         startConfigCenter();
-
+        // 加载远程配置
         loadRemoteConfigs();
-
+        // 检查所有的配置
         checkGlobalConfigs();
 
+        // 启动元数据中心
         // @since 2.7.8
         startMetadataCenter();
-
+        // 注册元数据服务
         initMetadataService();
-
+        // 初始化元数据服务暴露
         initMetadataServiceExports();
-
+        // 初始化事件监听
         initEventListener();
 
         if (logger.isInfoEnabled()) {
@@ -596,8 +599,11 @@ public class DubboBootstrap extends GenericEventListener {
         ConfigValidationUtils.validateSslConfig(getSsl());
     }
 
+    /**
+     * 启动配置中心
+     */
     private void startConfigCenter() {
-
+        // 如果有必要把注册中心当做配置中心
         useRegistryAsConfigCenterIfNecessary();
 
         Collection<ConfigCenterConfig> configCenters = configManager.getConfigCenters();
@@ -888,15 +894,20 @@ public class DubboBootstrap extends GenericEventListener {
     }
 
     /**
+     * 开始启动引导
      * Start the bootstrap
      */
     public DubboBootstrap start() {
+        // 防止多次启动
         if (started.compareAndSet(false, true)) {
+            // 设置dubbo 未准备好
             ready.set(false);
+            // 开始初始化操作
             initialize();
             if (logger.isInfoEnabled()) {
                 logger.info(NAME + " is starting...");
             }
+            // 暴露服务
             // 1. export Dubbo Services
             exportServices();
 

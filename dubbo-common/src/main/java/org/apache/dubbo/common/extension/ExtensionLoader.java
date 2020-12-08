@@ -531,11 +531,19 @@ public class ExtensionLoader<T> {
         return c != null;
     }
 
+    /**
+     * 获取所有支持的扩展实现类标识名
+     * @return
+     */
     public Set<String> getSupportedExtensions() {
         Map<String, Class<?>> clazzes = getExtensionClasses();
         return Collections.unmodifiableSet(new TreeSet<>(clazzes.keySet()));
     }
 
+    /**
+     * 获取所有当前扩展支持的所有实现对象
+     * @return
+     */
     public Set<T> getSupportedExtensionInstances() {
         List<T> instances = new LinkedList<>();
         Set<String> supportedExtensions = getSupportedExtensions();

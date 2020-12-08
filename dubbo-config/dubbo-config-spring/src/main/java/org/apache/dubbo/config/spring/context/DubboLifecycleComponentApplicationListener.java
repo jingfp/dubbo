@@ -33,6 +33,7 @@ import static java.util.Collections.emptyList;
 import static org.springframework.beans.factory.BeanFactoryUtils.beansOfTypeIncludingAncestors;
 
 /**
+ * 用于监听dubbo组件生命周期的应用监听器
  * A {@link ApplicationListener listener} for the {@link Lifecycle Dubbo Lifecycle} components
  *
  * @see {@link Lifecycle Dubbo Lifecycle}
@@ -53,8 +54,10 @@ public class DubboLifecycleComponentApplicationListener extends OneTimeExecution
     @Override
     protected void onApplicationContextEvent(ApplicationContextEvent event) {
         if (event instanceof ContextRefreshedEvent) {
+            //ApplicationContext 被初始化或刷新时
             onContextRefreshedEvent((ContextRefreshedEvent) event);
         } else if (event instanceof ContextClosedEvent) {
+            // 当使用 ConfigurableApplicationContext 接口中的 stop() 停止 ApplicationContext 时
             onContextClosedEvent((ContextClosedEvent) event);
         }
     }

@@ -34,6 +34,7 @@ import static com.alibaba.spring.util.BeanRegistrar.registerInfrastructureBean;
 public interface DubboBeanUtils {
 
     /**
+     * 手动注册通用类到spring
      * Register the common beans
      *
      * @param registry {@link BeanDefinitionRegistry}
@@ -53,14 +54,17 @@ public interface DubboBeanUtils {
         registerInfrastructureBean(registry, DubboConfigAliasPostProcessor.BEAN_NAME,
                 DubboConfigAliasPostProcessor.class);
 
+        // dubbo 生命周期组件监听器
         // Since 2.7.5 Register DubboLifecycleComponentApplicationListener as an infrastructure Bean
         registerInfrastructureBean(registry, DubboLifecycleComponentApplicationListener.BEAN_NAME,
                 DubboLifecycleComponentApplicationListener.class);
 
+        // dubbo 引导类应用监听器
         // Since 2.7.4 Register DubboBootstrapApplicationListener as an infrastructure Bean
         registerInfrastructureBean(registry, DubboBootstrapApplicationListener.BEAN_NAME,
                 DubboBootstrapApplicationListener.class);
 
+        // dubbo 配置默认属性
         // Since 2.7.6 Register DubboConfigDefaultPropertyValueBeanPostProcessor as an infrastructure Bean
         registerInfrastructureBean(registry, DubboConfigDefaultPropertyValueBeanPostProcessor.BEAN_NAME,
                 DubboConfigDefaultPropertyValueBeanPostProcessor.class);
