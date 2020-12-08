@@ -57,6 +57,7 @@ import java.util.regex.Pattern;
 import static org.apache.dubbo.common.constants.CommonConstants.HIDE_KEY_PREFIX;
 
 /**
+ * dubbo 标签配置解析器入口类
  * AbstractBeanDefinitionParser
  *
  * @export
@@ -70,8 +71,14 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
     private static final String ONINVOKE = "oninvoke";
     private static final String METHOD = "Method";
     private final Class<?> beanClass;
+    /** 当前标签解析成对应的实体类，是否需要设置唯一的ID */
     private final boolean required;
 
+    /**
+     *
+     * @param beanClass 标签对应的实体类
+     * @param required 是否需要配置唯一的id
+     */
     public DubboBeanDefinitionParser(Class<?> beanClass, boolean required) {
         this.beanClass = beanClass;
         this.required = required;
@@ -83,21 +90,27 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         beanDefinition.setBeanClass(beanClass);
         beanDefinition.setLazyInit(false);
         String id = resolveAttribute(element, "id", parserContext);
+        // 如果id未配置，该标签又被要求需要使用唯一的id，这里会自行生成一个ID
         if (StringUtils.isEmpty(id) && required) {
+            // 获取name 属性值
             String generatedBeanName = resolveAttribute(element, "name", parserContext);
             if (StringUtils.isEmpty(generatedBeanName)) {
                 if (ProtocolConfig.class.equals(beanClass)) {
+                    // 如果是协议标签，没有设置id，也没有设置name，则用dubbo默认的ID
                     generatedBeanName = "dubbo";
                 } else {
+                    // 其他的配置用interface 值作为唯一的ID
                     generatedBeanName = resolveAttribute(element, "interface", parserContext);
                 }
             }
             if (StringUtils.isEmpty(generatedBeanName)) {
+                // 还是为空，则用标签对应的实体类全限定名来表示
                 generatedBeanName = beanClass.getName();
             }
             id = generatedBeanName;
             int counter = 2;
             while (parserContext.getRegistry().containsBeanDefinition(id)) {
+                // 如果当前spring 环境中已经存在了当前id的bean，则在后面加后缀
                 id = generatedBeanName + (counter++);
             }
         }
@@ -105,10 +118,12 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
             if (parserContext.getRegistry().containsBeanDefinition(id)) {
                 throw new IllegalStateException("Duplicate spring bean id " + id);
             }
+            // 注册到spring 中心中
             parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
             beanDefinition.getPropertyValues().addPropertyValue("id", id);
         }
         if (ProtocolConfig.class.equals(beanClass)) {
+            // 如果标签是协议
             for (String name : parserContext.getRegistry().getBeanDefinitionNames()) {
                 BeanDefinition definition = parserContext.getRegistry().getBeanDefinition(name);
                 PropertyValue property = definition.getPropertyValues().getPropertyValue("protocol");
@@ -414,9 +429,17 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         return parse(element, parserContext, beanClass, required);
     }
 
+    /**
+     * 解析属性
+     * @param element
+     * @param attributeName
+     * @param parserContext
+     * @return
+     */
     private static String resolveAttribute(Element element, String attributeName, ParserContext parserContext) {
         String attributeValue = element.getAttribute(attributeName);
         Environment environment = parserContext.getReaderContext().getEnvironment();
+        // 解决配置中含有占位符需要环境变量替换
         return environment.resolvePlaceholders(attributeValue);
     }
 }

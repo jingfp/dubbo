@@ -80,6 +80,7 @@ public class ApplicationModel {
     public static void initFrameworkExts() {
         Set<FrameworkExt> exts = ExtensionLoader.getExtensionLoader(FrameworkExt.class).getSupportedExtensionInstances();
         for (FrameworkExt ext : exts) {
+            System.out.println(ext.getClass().getSimpleName());
             ext.initialize();
         }
     }
