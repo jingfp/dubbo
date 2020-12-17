@@ -19,6 +19,7 @@ package org.apache.dubbo.event;
 import java.util.EventObject;
 
 /**
+ * dubbo 规范的时间抽象
  * An event object of Dubbo is based on the Java standard {@link EventObject event}
  *
  * @since 2.7.5
@@ -28,11 +29,13 @@ public abstract class Event extends EventObject {
     private static final long serialVersionUID = -1704315605423947137L;
 
     /**
+     * 事件的发生时间
      * The timestamp of event occurs
      */
     private final long timestamp;
 
     /**
+     * 传递时间携带的数据
      * Constructs a prototypical Event.
      *
      * @param source The object on which the Event initially occurred.

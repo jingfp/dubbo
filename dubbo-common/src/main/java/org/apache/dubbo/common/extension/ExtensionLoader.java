@@ -783,7 +783,7 @@ public class ExtensionLoader<T> {
                 }
                 Class<?> pt = method.getParameterTypes()[0];
                 if (ReflectUtils.isPrimitives(pt)) {
-                    // 基础类型数据和包装类型跳过
+                    // 基础类型数据和基础类型的包装类型跳过
                     continue;
                 }
 
@@ -1198,6 +1198,7 @@ public class ExtensionLoader<T> {
     @SuppressWarnings("unchecked")
     private T createAdaptiveExtension() {
         try {
+            // 创建自适应的实例之后，还会给当前的实例注入整个系统中存有的扩展点实例
             return injectExtension((T) getAdaptiveExtensionClass().newInstance());
         } catch (Exception e) {
             // 创建失败，向上抛出异常

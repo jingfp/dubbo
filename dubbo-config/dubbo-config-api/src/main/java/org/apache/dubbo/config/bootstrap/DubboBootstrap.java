@@ -195,10 +195,13 @@ public class DubboBootstrap extends GenericEventListener {
     }
 
     private DubboBootstrap() {
+        // 获取全局配置管理中心
         configManager = ApplicationModel.getConfigManager();
+        // 获取全局环境配置中心
         environment = ApplicationModel.getEnvironment();
 
         DubboShutdownHook.getDubboShutdownHook().register();
+        // 添加监听器
         ShutdownHookCallbacks.INSTANCE.addCallback(new ShutdownHookCallback() {
             @Override
             public void callback() throws Throwable {

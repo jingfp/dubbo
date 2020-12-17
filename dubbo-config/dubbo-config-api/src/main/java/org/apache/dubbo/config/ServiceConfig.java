@@ -181,15 +181,16 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
     }
 
     public synchronized void export() {
+        // 是否能够暴露
         if (!shouldExport()) {
             return;
         }
-
+        // 查看当前配置是否有引导类，没有则创建并初始化
         if (bootstrap == null) {
             bootstrap = DubboBootstrap.getInstance();
             bootstrap.initialize();
         }
-
+        // 检查并更新配置
         checkAndUpdateSubConfigs();
 
         //init serviceMetadata
@@ -217,6 +218,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
     private void checkAndUpdateSubConfigs() {
         // Use default configs defined explicitly with global scope
         completeCompoundConfigs();
+        // 检查默认配置
         checkDefault();
         checkProtocol();
         // init some null configuration.
@@ -226,6 +228,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
 
         // if protocol is not injvm checkRegistry
         if (!isOnlyInJvm()) {
+            // 如果只是jvm暴露，检查下注册中心
             checkRegistry();
         }
         this.refresh();
@@ -233,7 +236,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         if (StringUtils.isEmpty(interfaceName)) {
             throw new IllegalStateException("<dubbo:service interface=\"\" /> interface not allow null!");
         }
-
+        // 区分是不是dubbo的基础暴露的服务
         if (ref instanceof GenericService) {
             interfaceClass = GenericService.class;
             if (StringUtils.isEmpty(generic)) {
@@ -241,12 +244,15 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
             }
         } else {
             try {
+                // 找到对应的接口类
                 interfaceClass = Class.forName(interfaceName, true, Thread.currentThread()
                         .getContextClassLoader());
             } catch (ClassNotFoundException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }
+            // 检查对应的暴露接口与暴露的方法是否符合
             checkInterfaceAndMethods(interfaceClass, getMethods());
+            // 检查对应的类型
             checkRef();
             generic = Boolean.FALSE.toString();
         }
@@ -281,6 +287,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         checkStubAndLocal(interfaceClass);
         ConfigValidationUtils.checkMock(interfaceClass, this);
         ConfigValidationUtils.validateServiceConfig(this);
+        // 后续处理配置
         postProcessConfig();
     }
 
@@ -326,6 +333,11 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         }
     }
 
+    /**
+     * 根据url总线来暴露各个需要暴露的协议
+     * @param protocolConfig
+     * @param registryURLs
+     */
     private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
         String name = protocolConfig.getName();
         if (StringUtils.isEmpty(name)) {
@@ -496,6 +508,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                     if (logger.isInfoEnabled()) {
                         logger.info("Export dubbo service " + interfaceClass.getName() + " to url " + url);
                     }
+                    // 拿到invoker对象
                     Invoker<?> invoker = PROXY_FACTORY.getInvoker(ref, (Class) interfaceClass, url);
                     DelegateProviderMetaDataInvoker wrapperInvoker = new DelegateProviderMetaDataInvoker(invoker, this);
 

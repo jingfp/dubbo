@@ -20,6 +20,7 @@ import org.apache.dubbo.config.DubboShutdownHook;
 import org.apache.dubbo.event.Event;
 
 /**
+ * dubbo主线程关闭的时间通知
  * An event raised when the {@link DubboShutdownHook} {@link Runtime#addShutdownHook(Thread) registered} on
  * {@link ApplicationShutdownHooks JVM ShutdownHooks}
  *

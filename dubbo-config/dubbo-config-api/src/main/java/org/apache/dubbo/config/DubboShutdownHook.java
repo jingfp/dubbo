@@ -53,7 +53,9 @@ public class DubboShutdownHook extends Thread {
      * Has it already been destroyed or not?
      */
     private static final AtomicBoolean destroyed = new AtomicBoolean(false);
-
+    /**
+     * dubbo时间分发器
+     */
     private final EventDispatcher eventDispatcher = EventDispatcher.getDefaultExtension();
 
     private DubboShutdownHook(String name) {

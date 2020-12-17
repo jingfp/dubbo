@@ -298,6 +298,7 @@ public class ConfigValidationUtils {
 
         checkExtension(ProxyFactory.class, PROXY_KEY, config.getProxy());
         checkExtension(Cluster.class, CLUSTER_KEY, config.getCluster());
+        // 检查filer
         checkMultiExtension(Filter.class, FILE_KEY, config.getFilter());
         checkNameHasSymbol(LAYER_KEY, config.getLayer());
 
@@ -312,27 +313,33 @@ public class ConfigValidationUtils {
         checkKey(GROUP_KEY, config.getGroup());
         checkName(TOKEN_KEY, config.getToken());
         checkPathName(PATH_KEY, config.getPath());
-
+        // 检查添加的暴露监听器
         checkMultiExtension(ExporterListener.class, "listener", config.getListener());
-
+        // 检查配置
         validateAbstractInterfaceConfig(config);
 
+        // 获取所有的注册中心配置
         List<RegistryConfig> registries = config.getRegistries();
         if (registries != null) {
             for (RegistryConfig registry : registries) {
+                // 校验操作
                 validateRegistryConfig(registry);
             }
         }
 
+        // 获取所有的协议配置
         List<ProtocolConfig> protocols = config.getProtocols();
         if (protocols != null) {
             for (ProtocolConfig protocol : protocols) {
+                // 校验操作
                 validateProtocolConfig(protocol);
             }
         }
 
+        // 获取所有提供者配置信息
         ProviderConfig providerConfig = config.getProvider();
         if (providerConfig != null) {
+            // 校验
             validateProviderConfig(providerConfig);
         }
     }

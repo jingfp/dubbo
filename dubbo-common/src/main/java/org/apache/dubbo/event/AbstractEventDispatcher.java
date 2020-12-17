@@ -111,9 +111,15 @@ public abstract class AbstractEventDispatcher implements EventDispatcher {
         }
     }
 
+    /**
+     * 事件分发
+     * @param event a {@link Event Dubbo event}
+     */
     @Override
     public void dispatch(Event event) {
-
+        /**
+         * 获取线程执行器
+         */
         Executor executor = getExecutor();
 
         // execute in sequential or parallel execution model
