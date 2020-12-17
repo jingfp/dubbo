@@ -366,6 +366,7 @@ public class ExtensionLoader<T> {
         if (!loadedExtensions.isEmpty()) {
             activateExtensions.addAll(loadedExtensions);
         }
+        activateExtensions.forEach(v -> System.out.println(v.getClass().getSimpleName()));
         return activateExtensions;
     }
 

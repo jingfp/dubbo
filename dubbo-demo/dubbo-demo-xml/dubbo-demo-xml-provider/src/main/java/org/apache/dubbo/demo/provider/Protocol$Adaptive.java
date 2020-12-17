@@ -1,7 +1,9 @@
 package org.apache.dubbo.demo.provider;
 
+import org.apache.dubbo.common.extension.Adaptive;
 import org.apache.dubbo.common.extension.ExtensionLoader;
 
+@Adaptive
 public class Protocol$Adaptive implements org.apache.dubbo.rpc.Protocol {
     public org.apache.dubbo.rpc.Exporter export(org.apache.dubbo.rpc.Invoker arg0) throws org.apache.dubbo.rpc.RpcException {
         if (arg0 == null) throw new IllegalArgumentException("org.apache.dubbo.rpc.Invoker argument == null");
@@ -12,6 +14,7 @@ public class Protocol$Adaptive implements org.apache.dubbo.rpc.Protocol {
         if (extName == null)
             throw new IllegalStateException("Failed to get extension (org.apache.dubbo.rpc.Protocol) name from url (" + url.toString() + ") use keys([protocol])");
         org.apache.dubbo.rpc.Protocol extension = (org.apache.dubbo.rpc.Protocol) ExtensionLoader.getExtensionLoader(org.apache.dubbo.rpc.Protocol.class).getExtension(extName);
+        System.out.println(extension.getClass().getSimpleName());
         return extension.export(arg0);
     }
 
