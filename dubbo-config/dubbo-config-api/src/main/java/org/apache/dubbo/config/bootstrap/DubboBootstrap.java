@@ -603,7 +603,7 @@ public class DubboBootstrap extends GenericEventListener {
     }
 
     /**
-     * 启动配置中心
+     * 启动配置中心 2.7.x开支支持
      */
     private void startConfigCenter() {
         // 如果有必要把注册中心当做配置中心

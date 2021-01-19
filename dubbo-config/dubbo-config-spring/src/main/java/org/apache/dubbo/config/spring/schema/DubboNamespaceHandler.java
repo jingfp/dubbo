@@ -89,6 +89,7 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport implements Co
          * @since 2.7.8
          * issue : https://github.com/apache/dubbo/issues/6275
          */
+        // 手动注册通用的bean到spring注册中心
         registerCommonBeans(registry);
         BeanDefinition beanDefinition = super.parse(element, parserContext);
         setSource(beanDefinition);

@@ -18,6 +18,7 @@ package org.apache.dubbo.config.context;
 
 import org.apache.dubbo.common.context.FrameworkExt;
 import org.apache.dubbo.common.context.LifecycleAdapter;
+import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.CollectionUtils;
@@ -64,7 +65,7 @@ import static org.apache.dubbo.config.Constants.REGISTRIES_SUFFIX;
 /**
  * 配置管理器
  */
-public class ConfigManager extends LifecycleAdapter implements FrameworkExt {
+public class  ConfigManager extends LifecycleAdapter implements FrameworkExt {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
 
