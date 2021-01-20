@@ -150,35 +150,46 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         }
         Set<String> props = new HashSet<>();
         ManagedMap parameters = null;
+        // 获取当前bean的所有方法
         for (Method setter : beanClass.getMethods()) {
             String name = setter.getName();
+            // 必须是POJO的数据的set方法
             if (name.length() > 3 && name.startsWith("set")
                     && Modifier.isPublic(setter.getModifiers())
                     && setter.getParameterTypes().length == 1) {
+                // 获取当前方法的参数类型
                 Class<?> type = setter.getParameterTypes()[0];
+                // 获取属性名称
                 String beanProperty = name.substring(3, 4).toLowerCase() + name.substring(4);
+                // 属性名字进行驼峰拆分
                 String property = StringUtils.camelToSplitName(beanProperty, "-");
+                // 缓存有效的属性名称
                 props.add(property);
                 // check the setter/getter whether match
                 Method getter = null;
                 try {
+                    // 获取当前属性的get方法
                     getter = beanClass.getMethod("get" + name.substring(3), new Class<?>[0]);
                 } catch (NoSuchMethodException e) {
                     try {
+                        // 如果属性是bool类型，获取is方法
                         getter = beanClass.getMethod("is" + name.substring(3), new Class<?>[0]);
                     } catch (NoSuchMethodException e2) {
                         // ignore, there is no need any log here since some class implement the interface: EnvironmentAware,
                         // ApplicationAware, etc. They only have setter method, otherwise will cause the error log during application start up.
                     }
                 }
+                // 属性的get方法无效（未找到、非public、类型对不上）直接忽略后续
                 if (getter == null
                         || !Modifier.isPublic(getter.getModifiers())
                         || !type.equals(getter.getReturnType())) {
                     continue;
                 }
                 if ("parameters".equals(property)) {
+                    // 定制属性名称与类型收集
                     parameters = parseParameters(element.getChildNodes(), beanDefinition, parserContext);
                 } else if ("methods".equals(property)) {
+                    // 方法属性列表收集 (service/reference)
                     parseMethods(id, element.getChildNodes(), beanDefinition, parserContext);
                 } else if ("arguments".equals(property)) {
                     parseArguments(id, element.getChildNodes(), beanDefinition, parserContext);
@@ -315,12 +326,21 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         }
     }
 
+    /**
+     * 解析定制参数
+     * @param nodeList
+     * @param beanDefinition
+     * @param parserContext
+     * @return
+     */
     @SuppressWarnings("unchecked")
     private static ManagedMap parseParameters(NodeList nodeList, RootBeanDefinition beanDefinition, ParserContext parserContext) {
+        // 配置文件没有配置<parameters>标签组
         if (nodeList == null) {
             return null;
         }
         ManagedMap parameters = null;
+        // 获取当前
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (!(nodeList.item(i) instanceof Element)) {
                 continue;
@@ -343,6 +363,13 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         return parameters;
     }
 
+    /**
+     * 解析method
+     * @param id
+     * @param nodeList
+     * @param beanDefinition
+     * @param parserContext
+     */
     @SuppressWarnings("unchecked")
     private static void parseMethods(String id, NodeList nodeList, RootBeanDefinition beanDefinition,
                                      ParserContext parserContext) {
@@ -363,6 +390,7 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                 if (methods == null) {
                     methods = new ManagedList();
                 }
+                // 递归调用解析操作
                 RootBeanDefinition methodBeanDefinition = parse(element,
                         parserContext, MethodConfig.class, false);
                 String beanName = id + "." + methodName;
